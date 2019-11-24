@@ -3,6 +3,7 @@
 
 #include "TextureManager.h"
 #include <SDL.h>
+#include <lua.hpp>
 
 class Game {
 public:
@@ -21,8 +22,11 @@ public:
 private:
   SDL_Window *m_pWindow;
   SDL_Renderer *m_pRenderer;
+  
+  lua_State* L;
 
   int m_currentFrame;
+  int m_x;
 
   bool m_bRunning;
 };

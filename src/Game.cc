@@ -7,6 +7,7 @@ Game::Game() {
   m_bRunning = false;
   m_pWindow = nullptr;
   m_pRenderer = nullptr;
+  m_x = 100;
 }
 
 Game::~Game() {}
@@ -37,6 +38,12 @@ bool Game::init(const char *title, const int xpos, const int ypos,
     return false;
   }
 
+  L = luaL_newstate();
+  luaopen_base(L);
+  luaopen_package(L);
+  
+  luaL_dofile(L, "assets/test.lua");
+
   if (!TextureManager::Instance().load("assets/animate-alpha.png", "animate",
                                        m_pRenderer)) {
     return false;
@@ -52,13 +59,14 @@ void Game::render() {
   SDL_RenderClear(m_pRenderer); // clear screen
 
   TextureManager::Instance().draw("animate", 0, 0, 128, 82, m_pRenderer);
-  TextureManager::Instance().drawFrame("animate", 100, 100, 128, 82, 1,
+  TextureManager::Instance().drawFrame("animate", m_x, 100, 128, 82, 1,
                                        m_currentFrame, m_pRenderer);
 
   SDL_RenderPresent(m_pRenderer); // render screen
 }
 
 void Game::clean() {
+  lua_close(L);
   std::cout << "Cleaning SDL" << std::endl;
   SDL_DestroyWindow(m_pWindow);
   SDL_DestroyRenderer(m_pRenderer);
@@ -78,4 +86,6 @@ void Game::handleEvents() {
   }
 }
 
-void Game::update() { m_currentFrame = int(((SDL_GetTicks() / 100) % 6)); }
+void Game::update() { m_currentFrame = int(((SDL_GetTicks() / 100) % 6)); m_x += 1;
+}
+

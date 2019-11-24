@@ -1,3 +1,4 @@
 build
 release
 *.dll
+.DS_Store
